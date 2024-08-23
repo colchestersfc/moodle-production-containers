@@ -17,7 +17,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 ## extensions based on https://github.com/moodlehq/moodle-php-apache/blob/master/Dockerfile
 # COPY libicu63_63.1-6+deb10u1_amd64.deb /tmp
-COPY --chmod=0755 moodle-container/php-extensions.sh /tmp
+COPY --chmod=0755 php-extensions.sh /tmp
 # TODO: Valorar usar esto https://github.com/mlocati/docker-php-extension-installer para la instalación de extensiones
 RUN /tmp/php-extensions.sh
 
@@ -84,11 +84,11 @@ RUN curl -o dockerize.tar.gz -fSL "https://github.com/jwilder/dockerize/releases
 	tar -xf dockerize.tar.gz -C /usr/local/bin; \
 	rm dockerize.tar.gz
 
-COPY moodle-container/moodle-config.php /usr/src/moodle/config.php
+COPY moodle-config.php /usr/src/moodle/config.php
 
-COPY --chmod=0755 moodle-container/docker-entrypoint.sh /usr/local/bin/
+COPY --chmod=0755 docker-entrypoint.sh /usr/local/bin/
 
-COPY moodle-container/ldap.conf /etc/ldap/ldap.conf
+COPY ldap.conf /etc/ldap/ldap.conf
 # remove plugins installation better a init dir where scripts can be executed if exists, from entrypoint
 # COPY plugins-config.sh /usr/local/bin/plugins-config.sh
 # COPY plugins /usr/src/
