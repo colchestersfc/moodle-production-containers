@@ -1017,6 +1017,13 @@ if ( getenv('SSL_PROXY') == "true" ) {
 //
 //      $CFG->alternative_file_system_class = '\\local_myfilestorage\\file_system';
 //
+//
+//=========================================================================
+// Moodle 2.3: Increasing this from the default saved about > 1000 db queries on the course/index.php page for
+// a Moodle having 1250 course categories.
+// This value is specified in lib/accesslib.php, but its OK to add a define for it in config.php:
+    define('CONTEXT_CACHE_MAX_SIZE', 7500);
+//
 //=========================================================================
 // ALL DONE!  To continue installation, visit your main page with a browser
 //=========================================================================
