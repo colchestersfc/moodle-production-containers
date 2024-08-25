@@ -272,14 +272,14 @@ $CFG->xsendfile = 'X-Accel-Redirect';     // Nginx {@see http://wiki.nginx.org/X
 //                                                        // for tuning php-memcached 3.0.x (PHP 7)
 //
 //   Redis session handler (requires redis server and redis extension):
-//      $CFG->session_handler_class = '\core\session\redis';
-//      $CFG->session_redis_host = '127.0.0.1';
+      $CFG->session_handler_class = '\core\session\redis';
+      $CFG->session_redis_host = 'redis';
 //      $CFG->session_redis_port = 6379;  // Optional.
 //      $CFG->session_redis_database = 0;  // Optional, default is db 0.
 //      $CFG->session_redis_auth = ''; // Optional, default is don't set one.
-//      $CFG->session_redis_prefix = ''; // Optional, default is don't set one.
-//      $CFG->session_redis_acquire_lock_timeout = 120;
-//      $CFG->session_redis_lock_expire = 7200;
+      $CFG->session_redis_prefix = 'ses_'; // Optional, default is don't set one.
+      $CFG->session_redis_acquire_lock_timeout = 120;
+      $CFG->session_redis_lock_expire = 7200;
 //      Use the igbinary serializer instead of the php default one. Note that phpredis must be compiled with
 //      igbinary support to make the setting to work. Also, if you change the serializer you have to flush the database!
 //      $CFG->session_redis_serializer_use_igbinary = false; // Optional, default is PHP builtin serializer.
