@@ -88,7 +88,10 @@ COPY moodle-config.php /usr/src/moodle/config.php
 
 COPY --chmod=0755 docker-entrypoint.sh /usr/local/bin/
 
+# Disable SSL Check on ldap connections
+# TODO: include certificate and check
 COPY ldap.conf /etc/ldap/ldap.conf
+
 # remove plugins installation better a init dir where scripts can be executed if exists, from entrypoint
 # COPY plugins-config.sh /usr/local/bin/plugins-config.sh
 # COPY plugins /usr/src/
