@@ -7,7 +7,7 @@ echo "***** Installing apt dependencies:"
 # Build packages will be added during the build, but will be removed at the end.
 BUILD_PACKAGES="gettext gnupg libcurl4-openssl-dev libfreetype6-dev libicu-dev libjpeg62-turbo-dev \
   libldap2-dev libmariadb-dev-compat libmariadb-dev libmemcached-dev libpng-dev libpq-dev libxml2-dev libxslt-dev \
-  unixodbc-dev uuid-dev"
+  unixodbc-dev uuid-dev libtidy-dev"
 
 # Packages for Postgres.
 PACKAGES_POSTGRES="libpq5"
@@ -16,14 +16,14 @@ PACKAGES_POSTGRES="libpq5"
 PACKAGES_MYMARIA="libmariadb3 mariadb-client"
 
 # Packages for other Moodle runtime dependenices.
-PACKAGES_RUNTIME="ghostscript libaio1 libcurl4 libgss3 libicu67 libmcrypt-dev libxml2 libxslt1.1 \
+PACKAGES_RUNTIME="ghostscript libaio1 libcurl4 libgss3 libicu72 libmcrypt-dev libxml2 libxslt1.1 \
   libzip-dev locales sassc unixodbc unzip zip git sudo"
 
 # Packages for Memcached.
 PACKAGES_MEMCACHED="libmemcached11 libmemcachedutil2"
 
 # Packages for LDAP.
-PACKAGES_LDAP="libldap-2.4-2"
+PACKAGES_LDAP="libldap-common"
 
 apt-get update
 apt-get install -y --no-install-recommends apt-transport-https \
@@ -55,6 +55,7 @@ docker-php-ext-install -j$(nproc) \
     soap \
     xsl \
     exif \
+    tidy \
     sockets # faster than tcp for communnication with nginx
     # https://php.watch/versions/8.0/xmlrpc PHP 8.0: XMLRPC extension is moved to PECL
     # xmlrpc \
