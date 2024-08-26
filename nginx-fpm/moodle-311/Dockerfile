@@ -1,6 +1,6 @@
 # php 7.4 not working yet, see https://tracker.moodle.org/browse/MDL-66260
 FROM php:7.3-fpm
-LABEL MAINTAINER juanda <juandacorreo@gmail.com>
+LABEL MAINTAINER shearingc <shearingc@colchsfc.ac.uk>
 
 ARG VERSION=3.11.18
 ARG MOOSH_VERSION=0.36

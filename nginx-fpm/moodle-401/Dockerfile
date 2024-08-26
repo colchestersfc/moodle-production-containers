@@ -1,6 +1,6 @@
 
 FROM php:8.0-fpm
-LABEL MAINTAINER juanda <juandacorreo@gmail.com>
+LABEL MAINTAINER shearingc <shearingc@colchsfc.ac.uk>
 
 ARG VERSION=latest-401
 # ARG MOOH_VERSION=0.36 varible not used, always latest moosh version.
