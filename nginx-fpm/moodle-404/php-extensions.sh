@@ -7,7 +7,7 @@ echo "***** Installing apt dependencies:"
 # Build packages will be added during the build, but will be removed at the end.
 BUILD_PACKAGES="gettext gnupg libcurl4-openssl-dev libfreetype6-dev libicu-dev libjpeg62-turbo-dev \
   libldap2-dev libmariadb-dev-compat libmariadb-dev libmemcached-dev libpng-dev libpq-dev libxml2-dev libxslt-dev \
-  unixodbc-dev uuid-dev libtidy-dev"
+  unixodbc-dev uuid-dev"
 
 # Packages for Postgres.
 PACKAGES_POSTGRES="libpq5"
@@ -25,6 +25,9 @@ PACKAGES_MEMCACHED="libmemcached11 libmemcachedutil2"
 # Packages for LDAP.
 PACKAGES_LDAP="libldap-common"
 
+# Packages for tidy.
+PACKAGES_TIDY="libtidy-dev"
+
 apt-get update
 apt-get install -y --no-install-recommends apt-transport-https \
     $BUILD_PACKAGES \
@@ -32,7 +35,8 @@ apt-get install -y --no-install-recommends apt-transport-https \
     $PACKAGES_MYMARIA \
     $PACKAGES_RUNTIME \
     $PACKAGES_MEMCACHED \
-    $PACKAGES_LDAP
+    $PACKAGES_LDAP \
+    $PACKAGES_TIDY
 
 #Install libicu63 for debian10. 
 # dpkg -i /tmp/libicu63_63.1-6+deb10u1_amd64.deb
