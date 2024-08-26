@@ -1,5 +1,5 @@
 
-FROM php:8.0-fpm
+FROM php:8.2-fpm
 LABEL MAINTAINER shearingc <shearingc@colcshfc.ac.uk>
 
 ARG VERSION=latest-404
