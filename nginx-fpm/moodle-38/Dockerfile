@@ -57,7 +57,7 @@ RUN	echo "Installing composer"; \
 	chmod +x ./composer.phar; \
 	mv ./composer.phar /usr/local/bin/composer
 
-RUN	echo "Installing moosh"; \
+RUN	echo "Installing moosh 0.39"; \
 	cd /usr/src; \
 	curl -o moosh.zip -fSL "https://moodle.org/plugins/download.php/23758/moosh_moodle38_2021032400.zip"; \
 	unzip moosh.zip; \
