@@ -7,7 +7,8 @@ echo "***** Installing apt dependencies:"
 # Build packages will be added during the build, but will be removed at the end.
 BUILD_PACKAGES="gettext gnupg libcurl4-openssl-dev libfreetype6-dev libicu-dev libjpeg62-turbo-dev \
   libldap2-dev libmariadb-dev-compat libmariadb-dev libmemcached-dev libpng-dev libpq-dev libxml2-dev libxslt-dev \
-  unixodbc-dev uuid-dev"
+  unixodbc-dev"
+  #uuid-dev
 
 # Packages for Postgres.
 PACKAGES_POSTGRES="libpq5"
@@ -75,8 +76,8 @@ docker-php-ext-install -j$(nproc) ldap
 # Memcached, MongoDB, Redis, APCu, igbinary.
 # TODO: Por qué instarlar MongoDB si usamos mariaDB ?
 echo "***** Installing Memcached, MongoDB, Redis, APCu, igbinary"
-pecl install memcached  redis apcu igbinary uuid  #mongodb
-docker-php-ext-enable memcached redis apcu igbinary uuid  #mongodb
+pecl install memcached  redis apcu igbinary #uuid  #mongodb
+docker-php-ext-enable memcached redis apcu igbinary #uuid  #mongodb
 
 # ZIP
 echo "***** Installing ZIP"
