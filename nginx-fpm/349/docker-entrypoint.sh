@@ -20,7 +20,7 @@ process_init_files() {
             *.sh)
                 if [ -x "$f" ]; then
                     echo >&2 "$f executing..."
-                    sudo -H -E -u www-data "$f"
+                    sudo -H -E -u 33 "$f"
                     chmod -x "$f"
                     echo >&2 "$f executed!"
                 else
@@ -47,8 +47,8 @@ if [[ "$1" == "php-fpm" ]]; then
     # Determine runtime user/group
     #
     if [ "$(id -u)" = "0" ]; then
-        user="www-data"
-        group="www-data"
+        user="33"
+        group="33"
     else
         user="$(id -u)"
         group="$(id -g)"
