@@ -133,6 +133,15 @@ RUN curl -o composer.phar -fSL "https://github.com/composer/composer/releases/do
 
 RUN sed -i 's|^listen = .*|listen = 9000|' /etc/php-fpm.d/www.conf
 
+RUN printf '%s\n' \
+'[global]' \
+'error_log = /proc/self/fd/2' \
+'' \
+'[www]' \
+'clear_env = no' \
+'catch_workers_output = yes' \
+> /etc/php-fpm.d/99-docker.conf
+
 RUN getent passwd 33 || true && \
     getent group 33 || true
 
