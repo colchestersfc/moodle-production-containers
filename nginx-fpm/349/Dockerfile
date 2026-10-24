@@ -126,13 +126,13 @@ RUN curl -o composer.phar -fSL "https://github.com/composer/composer/releases/do
 #
 # Moosh
 #
-RUN cd /usr/src && \
-    curl -o moosh.zip -fSL "https://moodle.org/plugins/download.php/23758/moosh_moodle38_2021032400.zip" && \
-    unzip moosh.zip && \
-    cd moosh && \
-    composer install && \
-    ln -s /usr/src/moosh/moosh.php /usr/local/bin/moosh && \
-    rm -f /usr/src/moosh.zip
+#RUN cd /usr/src && \
+#    curl -o moosh.zip -fSL "https://moodle.org/plugins/download.php/23758/moosh_moodle38_2021032400.zip" && \
+#    unzip moosh.zip && \
+#    cd moosh && \
+#    composer install && \
+#    ln -s /usr/src/moosh/moosh.php /usr/local/bin/moosh && \
+#    rm -f /usr/src/moosh.zip
 
 #
 # Unoconv
