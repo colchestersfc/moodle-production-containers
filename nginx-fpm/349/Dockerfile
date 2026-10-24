@@ -17,6 +17,8 @@ RUN dnf -y update && \
     dnf -y module enable php:7.2 && \
     dnf -y install \
         shadow-utils \
+        diffutils \
+        file \
         php \
         php-cli \
         php-fpm \
@@ -66,7 +68,7 @@ RUN dnf -y update && \
 # PECL extensions previously installed by php-extensions.sh
 #
 RUN printf "\n" | pecl install igbinary
-RUN printf "\n" | pecl install redis
+RUN printf "\n" | pecl install redis-5.3.6
 RUN printf "\n" | pecl install memcached
 
 RUN echo "extension=igbinary.so" > /etc/php.d/40-igbinary.ini && \
