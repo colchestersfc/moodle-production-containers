@@ -11,6 +11,13 @@ EXPOSE 80
 
 RUN dnf -y update && \
     dnf -y install epel-release && \
+    dnf -y module enable php:7.2 && 
+
+RUN echo "===== PHP PACKAGES =====" && \
+    dnf list available 'php*' | grep -Ei 'redis|memcached|igbinary|apcu|xmlrpc'
+
+RUN dnf -y update && \
+    dnf -y install epel-release && \
     dnf -y module enable php:7.2 && \
     dnf -y install \
         shadow-utils \
