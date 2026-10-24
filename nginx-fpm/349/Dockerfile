@@ -33,9 +33,9 @@ RUN dnf -y update && \
         php-xsl \
         php-zip \
         php-pecl-apcu \
-        php-igbinary \
-        php-memcached \
-        php-redis \
+        php-pecl-igbinary \
+        php-pecl-memcached \
+        php-pecl-redis \
         mariadb \
         mariadb-connector-c \
         openldap \
