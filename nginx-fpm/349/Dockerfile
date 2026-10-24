@@ -9,6 +9,7 @@ ENV DOCKERIZE_VERSION=v0.7.0
 VOLUME ["/var/moodledata"]
 EXPOSE 80
 
+RUN dnf makecache --refresh
 RUN dnf -y update && \
     dnf -y module enable php:7.2 && \
     dnf -y install \
@@ -31,9 +32,9 @@ RUN dnf -y update && \
         php-xsl \
         php-zip \
         php-pecl-apcu \
-        php-pecl-igbinary \
-        php-pecl-memcached \
-        php-pecl-redis \
+        php-igbinary \
+        php-memcached \
+        php-redis \
         mariadb \
         mariadb-connector-c \
         openldap \
@@ -48,7 +49,6 @@ RUN dnf -y update && \
         sudo \
         ghostscript \
         expect \
-        unoconv \
         libreoffice \
         which && \
     dnf clean all
