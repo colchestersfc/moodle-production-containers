@@ -137,6 +137,9 @@ RUN curl -o composer.phar -fSL "https://github.com/composer/composer/releases/do
 #
 # Unoconv
 #
+RUN getent passwd 33 || true && \
+    getent group 33 || true
+
 RUN mkdir -p /var/www/.config && \
     chown -R www-data:www-data /var/www/.config
 
