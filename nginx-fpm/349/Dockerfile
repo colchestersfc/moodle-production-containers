@@ -155,6 +155,8 @@ RUN chmod 777 /tmp && \
     chown -R 33:33 /usr/src/moodle && \
     chown 33:33 /var/www
 
+WORKDIR /var/www/html
+
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 CMD ["php-fpm", "-F"]
