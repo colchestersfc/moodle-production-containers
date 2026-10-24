@@ -175,4 +175,7 @@ if [[ "$1" == "php-fpm" ]]; then
 
 fi
 
+# Ensure php-fpm runtime directory exists
+mkdir -p /run/php-fpm
+
 exec "$@"
