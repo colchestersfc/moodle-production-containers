@@ -9,34 +9,7 @@ ENV DOCKERIZE_VERSION=v0.7.0
 VOLUME ["/var/moodledata"]
 EXPOSE 80
 
-RUN dnf -y update && \
-    dnf -y install epel-release && \
-    crb enable && \
-    dnf -y module enable php:7.2
 
-RUN echo "===== REPOS =====" && \
-    dnf repolist
-
-RUN echo "===== PHP MODULES =====" && \
-    dnf module list php
-
-RUN echo "===== PHP PACKAGES =====" && \
-    dnf list available 'php*' | grep -Ei 'redis|memcached|igbinary|apcu|xmlrpc' || true
-
-RUN echo "===== MEMCACHED =====" && \
-    dnf search memcached || true
-
-RUN echo "===== REDIS =====" && \
-    dnf search redis || true
-
-RUN echo "===== IGBINARY =====" && \
-    dnf search igbinary || true
-
-RUN echo "===== UNOCONV =====" && \
-    dnf search unoconv || true
-
-RUN dnf search libmemcached
-RUN dnf list available '*libmemcached*'
 
 RUN dnf -y update && \
     dnf -y install epel-release && \
@@ -66,7 +39,7 @@ RUN dnf -y update && \
         gcc \
         gcc-c++ \
         make \
-        libmemcached-awesome-devel \
+        libmemcached-devel \
         cyrus-sasl-devel \
         zlib-devel \
         openssl-devel \
