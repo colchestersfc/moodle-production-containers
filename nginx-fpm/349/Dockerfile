@@ -13,8 +13,26 @@ RUN dnf -y update && \
     dnf -y install epel-release && \
     dnf -y module enable php:7.2
 
+RUN echo "===== REPOS =====" && \
+    dnf repolist
+
+RUN echo "===== PHP MODULES =====" && \
+    dnf module list php
+
 RUN echo "===== PHP PACKAGES =====" && \
-    dnf list available 'php*' | grep -Ei 'redis|memcached|igbinary|apcu|xmlrpc'
+    dnf list available 'php*' | grep -Ei 'redis|memcached|igbinary|apcu|xmlrpc' || true
+
+RUN echo "===== MEMCACHED =====" && \
+    dnf search memcached || true
+
+RUN echo "===== REDIS =====" && \
+    dnf search redis || true
+
+RUN echo "===== IGBINARY =====" && \
+    dnf search igbinary || true
+
+RUN echo "===== UNOCONV =====" && \
+    dnf search unoconv || true
 
 RUN dnf -y update && \
     dnf -y install epel-release && \
