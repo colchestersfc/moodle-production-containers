@@ -21,6 +21,7 @@ RUN dnf -y update && \
         php-cli \
         php-fpm \
         php-common \
+        php-json \
         php-devel \
         php-pear \
         php-gd \
