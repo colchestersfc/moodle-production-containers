@@ -11,6 +11,7 @@ EXPOSE 80
 
 RUN dnf makecache --refresh
 RUN dnf -y update && \
+    dnf -y install epel-release &&
     dnf -y module enable php:7.2 && \
     dnf -y install \
         shadow-utils \
@@ -49,6 +50,7 @@ RUN dnf -y update && \
         sudo \
         ghostscript \
         expect \
+        unoconv \
         libreoffice \
         which && \
     dnf clean all
