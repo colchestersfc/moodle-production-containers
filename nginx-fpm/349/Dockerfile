@@ -1,106 +1,146 @@
+FROM almalinux/8-base
 
-FROM php:7.2.34-fpm
-LABEL MAINTAINER shearingc <shearingc@colchsfc.ac.uk>
+LABEL maintainer="shearingc <shearingc@colchsfc.ac.uk>"
 
 ARG VERSION=3.4.9
-# ARG MOOSH_VERSION=0.36 varible not used, always latest moosh version.
 ARG COMPOSER_VERSION=1.10.6
-ENV DOCKERIZE_VERSION v0.7.0
+ENV DOCKERIZE_VERSION=v0.7.0
 
 VOLUME ["/var/moodledata"]
 EXPOSE 80
 
-# Let the container know that there is no tty JUST WHEN INSTALLING!
-# Later we can run docker -ti and we need interactivity
+RUN dnf -y update && \
+    dnf -y module enable php:7.2 && \
+    dnf -y install \
+        php \
+        php-cli \
+        php-fpm \
+        php-common \
+        php-devel \
+        php-gd \
+        php-intl \
+        php-ldap \
+        php-mbstring \
+        php-mysqlnd \
+        php-opcache \
+        php-soap \
+        php-process \
+        php-xml \
+        php-xmlrpc \
+        php-xsl \
+        php-zip \
+        php-pecl-apcu \
+        php-pecl-igbinary \
+        php-pecl-memcached \
+        php-pecl-redis \
+        mariadb \
+        mariadb-connector-c \
+        openldap \
+        openldap-clients \
+        libxslt \
+        curl \
+        wget \
+        unzip \
+        zip \
+        tar \
+        git \
+        sudo \
+        ghostscript \
+        expect \
+        unoconv \
+        libreoffice \
+        which && \
+    dnf clean all
 
-ARG DEBIAN_FRONTEND=noninteractive
+#
+# Create Debian-compatible www-data account
+#
+RUN groupadd -g 33 www-data || true && \
+    useradd -u 33 -g 33 -r -s /sbin/nologin www-data || true
 
-## extensions based on https://github.com/moodlehq/moodle-php-apache/blob/master/Dockerfile
-# COPY libicu63_63.1-6+deb10u1_amd64.deb /tmp
-COPY --chmod=0755 php-extensions.sh /tmp
-# TODO: Valorar usar esto https://github.com/mlocati/docker-php-extension-installer para la instalación de extensiones
-RUN /tmp/php-extensions.sh
-
-# set recommended opcache settings 
-# see https://www.php.net/manual/en/opcache.installation.php
-## see https://docs.moodle.org/401/en/OPcache
+#
+# OPCACHE
+#
 RUN { \
-	echo 'opcache.memory_consumption=1024'; \
-	echo 'opcache.interned_strings_buffer=8'; \
-	echo 'opcache.max_accelerated_files=10000'; \
-	echo 'opcache.revalidate_freq=60'; \
-	# opcache.fast_shutdown=1 ; prior to PHP 7.2.0 echo 'opcache.fast_shutdown=1'; \
-	echo 'opcache.enable_cli=1'; \
-	echo 'opcache.use_cwd=1'; \
-	echo 'opcache.validate_timestamps = 1'; \
-	echo 'opcache.save_comments=1'; \
-	echo 'opcache.enable_file_override=0'; \
-	} > /usr/local/etc/php/conf.d/opcache.ini
+    echo 'opcache.memory_consumption=1024'; \
+    echo 'opcache.interned_strings_buffer=8'; \
+    echo 'opcache.max_accelerated_files=10000'; \
+    echo 'opcache.revalidate_freq=60'; \
+    echo 'opcache.enable_cli=1'; \
+    echo 'opcache.use_cwd=1'; \
+    echo 'opcache.validate_timestamps=1'; \
+    echo 'opcache.save_comments=1'; \
+    echo 'opcache.enable_file_override=0'; \
+    } > /etc/php.d/99-opcache.ini
 
-# usefull for moodle
-
+#
+# MOODLE PHP SETTINGS
+#
 RUN { \
-	echo 'file_uploads = On'; \
-	echo 'memory_limit = 512M'; \
-	echo 'upload_max_filesize = 64M'; \
-	echo 'post_max_size = 64M'; \
-	echo 'max_execution_time = 600'; \
-	} > /usr/local/etc/php/conf.d/uploads.ini
+    echo 'file_uploads=On'; \
+    echo 'memory_limit=512M'; \
+    echo 'upload_max_filesize=64M'; \
+    echo 'post_max_size=64M'; \
+    echo 'max_execution_time=600'; \
+    } > /etc/php.d/99-moodle.ini
 
+#
+# APCU
+#
+RUN echo 'apc.enable_cli=1' > /etc/php.d/99-apcu.ini
 
-RUN	echo "Installing moodle"; \
-	curl -o moodle.tgz -fSL "https://download.moodle.org/download.php/direct/stable34/moodle-${VERSION}.tgz"; \
-	mkdir /usr/src/moodle; \
-	tar -xf moodle.tgz -C /usr/src/moodle --strip 1; \
-	rm moodle.tgz
+#
+# MOODLE
+#
+RUN curl -o moodle.tgz -fSL "https://download.moodle.org/download.php/direct/stable34/moodle-${VERSION}.tgz" && \
+    mkdir -p /usr/src/moodle && \
+    tar -xf moodle.tgz -C /usr/src/moodle --strip-components=1 && \
+    rm -f moodle.tgz
 
-RUN	echo "Installing composer"; \
-	curl -o composer.phar -fSL "https://github.com/composer/composer/releases/download/${COMPOSER_VERSION}/composer.phar"; \
-	chmod +x ./composer.phar; \
-	mv ./composer.phar /usr/local/bin/composer
+#
+# COMPOSER
+#
+RUN curl -o composer.phar -fSL "https://github.com/composer/composer/releases/download/${COMPOSER_VERSION}/composer.phar" && \
+    chmod +x composer.phar && \
+    mv composer.phar /usr/local/bin/composer
 
-RUN	echo "Installing moosh"; \
-	cd /usr/src; \
-	curl -o moosh.zip -fSL "https://moodle.org/plugins/download.php/23758/moosh_moodle38_2021032400.zip"; \
-	unzip moosh.zip; \
-	cd moosh; \
-	composer install; \
-	ln -s /usr/src/moosh/moosh.php /usr/local/bin/moosh; \
-	rm ../moosh.zip
+#
+# MOOSH
+#
+RUN cd /usr/src && \
+    curl -o moosh.zip -fSL "https://moodle.org/plugins/download.php/23758/moosh_moodle38_2021032400.zip" && \
+    unzip moosh.zip && \
+    cd moosh && \
+    composer install && \
+    ln -s /usr/src/moosh/moosh.php /usr/local/bin/moosh && \
+    rm -f /usr/src/moosh.zip
 
-RUN	echo "Installing unoconv"; \
-	# apt-get update && apt-get install -y; \
-	apt-get update; \
-	apt-cache policy unoconv; \
-	apt-get -y install unoconv; \
-	mkdir /var/www/.config; \
-	chown -R www-data:www-data /var/www/.config
+#
+# UNOCONV
+#
+RUN mkdir -p /var/www/.config && \
+    chown -R www-data:www-data /var/www/.config
 
-RUN	echo "Installing expect"; \
-	apt-get update; \
-	apt-get -y install expect
-
-RUN curl -o dockerize.tar.gz -fSL "https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz"; \
-	tar -xf dockerize.tar.gz -C /usr/local/bin; \
-	rm dockerize.tar.gz
+#
+# DOCKERIZE
+#
+RUN curl -o dockerize.tar.gz -fSL "https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz" && \
+    tar -xf dockerize.tar.gz -C /usr/local/bin && \
+    rm -f dockerize.tar.gz
 
 COPY moodle-config.php /usr/src/moodle/config.php
 
-COPY --chmod=0755 docker-entrypoint.sh /usr/local/bin/
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
 
-# Disable SSL Check on ldap connections
-# TODO: include certificate and check
-COPY ldap.conf /etc/ldap/ldap.conf
+COPY ldap.conf /etc/openldap/ldap.conf
 
-# remove plugins installation better a init dir where scripts can be executed if exists, from entrypoint
-# COPY plugins-config.sh /usr/local/bin/plugins-config.sh
-# COPY plugins /usr/src/
+RUN chmod 777 /tmp && \
+    chmod +t /tmp && \
+    mkdir -p /var/www && \
+    chown -R www-data:www-data /usr/src/moodle && \
+    chown www-data:www-data /var/www
 
-# Fix the original permissions of /tmp, the PHP default upload tmp dir.
-
-
-RUN chmod 777 /tmp && chmod +t /tmp ;\
-	chown -R www-data:www-data -R /usr/src/moodle ;\
-	chown www-data:www-data /var/www # moosh uses it
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["php-fpm"]
+
+CMD ["php-fpm","-F"]
