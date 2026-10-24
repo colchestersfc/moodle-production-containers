@@ -12,6 +12,7 @@ EXPOSE 80
 RUN dnf makecache --refresh
 RUN dnf -y update && \
     dnf -y install epel-release && \
+    dnf -y install https://rpms.remirepo.net/enterprise/remi-release-8.rpm && \
     dnf -y module enable php:7.2 && \
     dnf -y install \
         shadow-utils \
