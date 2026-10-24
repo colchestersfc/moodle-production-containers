@@ -12,6 +12,7 @@ EXPOSE 80
 RUN dnf -y update && \
     dnf -y module enable php:7.2 && \
     dnf -y install \
+        shadow-utils \
         php \
         php-cli \
         php-fpm \
