@@ -11,6 +11,7 @@ EXPOSE 80
 
 RUN dnf -y update && \
     dnf -y install epel-release && \
+    crb enable && \
     dnf -y module enable php:7.2
 
 RUN echo "===== REPOS =====" && \
@@ -34,8 +35,12 @@ RUN echo "===== IGBINARY =====" && \
 RUN echo "===== UNOCONV =====" && \
     dnf search unoconv || true
 
+RUN dnf search libmemcached
+RUN dnf list available '*libmemcached*'
+
 RUN dnf -y update && \
     dnf -y install epel-release && \
+    crb enable && \
     dnf -y module enable php:7.2 && \
     dnf -y install \
         shadow-utils \
