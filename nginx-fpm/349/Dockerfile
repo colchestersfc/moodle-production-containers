@@ -9,10 +9,8 @@ ENV DOCKERIZE_VERSION=v0.7.0
 VOLUME ["/var/moodledata"]
 EXPOSE 80
 
-RUN dnf makecache --refresh
 RUN dnf -y update && \
     dnf -y install epel-release && \
-    dnf -y install https://rpms.remirepo.net/enterprise/remi-release-8.rpm && \
     dnf -y module enable php:7.2 && \
     dnf -y install \
         shadow-utils \
@@ -21,6 +19,7 @@ RUN dnf -y update && \
         php-fpm \
         php-common \
         php-devel \
+        php-pear \
         php-gd \
         php-intl \
         php-ldap \
@@ -34,9 +33,13 @@ RUN dnf -y update && \
         php-xsl \
         php-zip \
         php-pecl-apcu \
-        php-pecl-igbinary \
-        php-pecl-memcached \
-        php-pecl-redis \
+        gcc \
+        gcc-c++ \
+        make \
+        libmemcached-devel \
+        cyrus-sasl-devel \
+        zlib-devel \
+        openssl-devel \
         mariadb \
         mariadb-connector-c \
         openldap \
@@ -55,6 +58,18 @@ RUN dnf -y update && \
         libreoffice \
         which && \
     dnf clean all
+
+#
+# PECL extensions previously installed by php-extensions.sh
+#
+RUN printf "\n" | pecl install igbinary && \
+    printf "\n" | pecl install redis && \
+    printf "\n" | pecl install memcached
+
+RUN echo "extension=igbinary.so" > /etc/php.d/40-igbinary.ini && \
+    echo "extension=redis.so" > /etc/php.d/40-redis.ini && \
+    echo "extension=memcached.so" > /etc/php.d/40-memcached.ini && \
+    echo "apc.enable_cli=1" > /etc/php.d/99-apcu.ini
 
 #
 # Create Debian-compatible www-data account
@@ -78,7 +93,7 @@ RUN { \
     } > /etc/php.d/99-opcache.ini
 
 #
-# MOODLE PHP SETTINGS
+# Moodle PHP settings
 #
 RUN { \
     echo 'file_uploads=On'; \
@@ -89,12 +104,7 @@ RUN { \
     } > /etc/php.d/99-moodle.ini
 
 #
-# APCU
-#
-RUN echo 'apc.enable_cli=1' > /etc/php.d/99-apcu.ini
-
-#
-# MOODLE
+# Moodle
 #
 RUN curl -o moodle.tgz -fSL "https://download.moodle.org/download.php/direct/stable34/moodle-${VERSION}.tgz" && \
     mkdir -p /usr/src/moodle && \
@@ -102,14 +112,14 @@ RUN curl -o moodle.tgz -fSL "https://download.moodle.org/download.php/direct/sta
     rm -f moodle.tgz
 
 #
-# COMPOSER
+# Composer
 #
 RUN curl -o composer.phar -fSL "https://github.com/composer/composer/releases/download/${COMPOSER_VERSION}/composer.phar" && \
     chmod +x composer.phar && \
     mv composer.phar /usr/local/bin/composer
 
 #
-# MOOSH
+# Moosh
 #
 RUN cd /usr/src && \
     curl -o moosh.zip -fSL "https://moodle.org/plugins/download.php/23758/moosh_moodle38_2021032400.zip" && \
@@ -120,13 +130,13 @@ RUN cd /usr/src && \
     rm -f /usr/src/moosh.zip
 
 #
-# UNOCONV
+# Unoconv
 #
 RUN mkdir -p /var/www/.config && \
     chown -R www-data:www-data /var/www/.config
 
 #
-# DOCKERIZE
+# Dockerize
 #
 RUN curl -o dockerize.tar.gz -fSL "https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz" && \
     tar -xf dockerize.tar.gz -C /usr/local/bin && \
@@ -147,4 +157,4 @@ RUN chmod 777 /tmp && \
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["php-fpm","-F"]
+CMD ["php-fpm", "-F"]
