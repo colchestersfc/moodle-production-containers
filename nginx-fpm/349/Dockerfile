@@ -9,8 +9,6 @@ ENV DOCKERIZE_VERSION=v0.7.0
 VOLUME ["/var/moodledata"]
 EXPOSE 80
 
-
-
 RUN dnf -y update && \
     dnf -y install epel-release && \
     crb enable && \
@@ -77,12 +75,6 @@ RUN echo "extension=igbinary.so" > /etc/php.d/40-igbinary.ini && \
     echo "apc.enable_cli=1" > /etc/php.d/99-apcu.ini
 
 #
-# Create Debian-compatible www-data account
-#
-RUN groupadd -g 33 www-data || true && \
-    useradd -u 33 -g 33 -r -s /sbin/nologin www-data || true
-
-#
 # OPCACHE
 #
 RUN { \
@@ -141,7 +133,7 @@ RUN getent passwd 33 || true && \
     getent group 33 || true
 
 RUN mkdir -p /var/www/.config && \
-    chown -R www-data:www-data /var/www/.config
+    chown -R 33:33 /var/www/.config
 
 #
 # Dockerize
@@ -160,8 +152,8 @@ COPY ldap.conf /etc/openldap/ldap.conf
 RUN chmod 777 /tmp && \
     chmod +t /tmp && \
     mkdir -p /var/www && \
-    chown -R www-data:www-data /usr/src/moodle && \
-    chown www-data:www-data /var/www
+    chown -R 33:33 /usr/src/moodle && \
+    chown 33:33 /var/www
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
