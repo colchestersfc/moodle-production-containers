@@ -36,7 +36,7 @@ RUN dnf -y update && \
         gcc \
         gcc-c++ \
         make \
-        libmemcached-devel \
+        libmemcached-awesome-devel \
         cyrus-sasl-devel \
         zlib-devel \
         openssl-devel \
@@ -62,9 +62,9 @@ RUN dnf -y update && \
 #
 # PECL extensions previously installed by php-extensions.sh
 #
-RUN printf "\n" | pecl install igbinary && \
-    printf "\n" | pecl install redis && \
-    printf "\n" | pecl install memcached
+RUN printf "\n" | pecl install igbinary
+RUN printf "\n" | pecl install redis
+RUN printf "\n" | pecl install memcached
 
 RUN echo "extension=igbinary.so" > /etc/php.d/40-igbinary.ini && \
     echo "extension=redis.so" > /etc/php.d/40-redis.ini && \
