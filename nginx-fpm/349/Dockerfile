@@ -132,6 +132,7 @@ RUN curl -o composer.phar -fSL "https://github.com/composer/composer/releases/do
 #
 
 RUN sed -i 's|^listen = .*|listen = 9000|' /etc/php-fpm.d/www.conf
+RUN sed -i '/^listen.allowed_clients/d' /etc/php-fpm.d/www.conf
 
 RUN printf '%s\n' \
 '[global]' \
