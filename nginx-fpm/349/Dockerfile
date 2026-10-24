@@ -130,6 +130,9 @@ RUN curl -o composer.phar -fSL "https://github.com/composer/composer/releases/do
 #
 # Unoconv
 #
+
+RUN sed -i 's|^listen = .*|listen = 9000|' /etc/php-fpm.d/www.conf
+
 RUN getent passwd 33 || true && \
     getent group 33 || true
 
